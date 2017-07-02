@@ -23,7 +23,7 @@ const Title=()=>{
 const TodoItem=({item,remove})=>{
 	console.log("todo ite",item);
 	return (
-	<li onClick={remove(item.id)}>{item.text}</li>
+	<li onClick={()=>remove(item.id)}>{item.text}</li>
 	)
 }
 
