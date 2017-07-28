@@ -1,45 +1,5 @@
 import React from 'react';
 
-const TodoForm=({submit})=>{
-let input;
-	return (
-
-	<div>
-
-	<input ref={node=>
-	{
-	input=node
-	}} />
-
-	 <button onClick={()=>{submit(input.value); input.value=''}} >+</button>
-	</div>
-	)
-}
-
-const Title=()=>{
-	return(<h1>Todo App</h1>)
-}
-
-const TodoItem=({item,remove})=>{
-	console.log("todo ite",item);
-	return (
-	<li onClick={()=>remove(item.id)}>{item.text}</li>
-	)
-}
-
-const TodoBody=({items,removeItem})=>{
-console.log("itms==",items);
-	const todoNode=items.map(todo=>{
-		return (
-		<TodoItem key={todo.id} item={todo} remove={removeItem} />
-		)
-	})
-	return(
-	<ul>
-	{todoNode}
-	</ul>
-	)
-}
 
 window.id=0;
 export default class TodoApp extends React.Component{

@@ -1,17 +1,17 @@
 import React from 'react';
+
 const TodoForm=({submit})=>{
-let tok;
+let input;
 	return (
 
 	<div>
-	<form>
+
 	<input ref={node=>
 	{
-	tok=node;
+	input=node
 	}} />
 
-	 <button onClick={()=>{submit(tok.value) tok.value=''}} >+</button>
-		</form>
+	 <button onClick={()=>{submit(input.value); input.value=''}} >+</button>
 	</div>
 	)
 }
@@ -21,15 +21,17 @@ const Title=()=>{
 }
 
 const TodoItem=({item,remove})=>{
+	console.log("todo ite",item);
 	return (
-	<li onClick={remove(item.id)}>{todo.text}</li>
+	<li onClick={()=>remove(item.id)}>{item.text}</li>
 	)
 }
 
 const TodoBody=({items,removeItem})=>{
+console.log("itms==",items);
 	const todoNode=items.map(todo=>{
 		return (
-		<TodoItem item={todo} remove={removeItem} />
+		<TodoItem key={todo.id} item={todo} remove={removeItem} />
 		)
 	})
 	return(
@@ -37,7 +39,7 @@ const TodoBody=({items,removeItem})=>{
 	{todoNode}
 	</ul>
 	)
-}
+};
 
 window.id=0;
 export default class TodoApp extends React.Component{
@@ -46,23 +48,41 @@ export default class TodoApp extends React.Component{
 		this.state={
 			data:[]
 		};
+		    this.apiUrl = 'http://5958e93d3715030011b89a8a.mockapi.io/todo'
+
 	}	
-
-	componentWillMount(prevProps,prevState) {
-		console.log("willMount",prevPros,prevState);
-
-    }
 	submitTodo(val){
+		console.log("val a subir",val);
 		const todo={text:val,id:window.id++}
-		this.state.data.push(todo);
-		this.setState({data:this.state.data})
+		    axios.post(this.apiUrl, todo)
+       .then((res) => {
+          this.state.data.push(res.data);
+          this.setState({data: this.state.data});
+       });
 	}
+	componentDidMount(){
+    // Make HTTP reques with Axios
+    axios.get(this.apiUrl)
+      .then((res) => {
+      	console.log("res.data",res.data);
+        // Set state with result
+	  this.setState((prevState, props) => ({
+	  data: res.data
+	}));
+      });
+  	}
+
+
 
 	removeItem(id){
 	const todo=this.state.data.filter(item=>{
 		if(item.id!=id){
 			return item;
 		}
+		    axios.delete(this.apiUrl+'/'+id)
+      .then((res) => {
+        this.setState({data: todo});      
+      })
 	})
 	this.setState({data:todo});
 	}
